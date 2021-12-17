@@ -170,3 +170,129 @@ int main() {
     print_lst(lst_start);
     return 0;
 }
+
+//Сочетание (базовый)
+#include <iostream> 
+#include <vector> 
+#include <string> 
+using namespace std; 
+ 
+int len(string str){ 
+    int len = 0; 
+    for(int i = 0; str[i] != '\0'; i++){ 
+        len++; 
+    } 
+    return len; 
+} 
+ 
+void print(const vector<char> &mass){ 
+    cout << "["; 
+    for(int i = 0; i < mass.size(); i++){ 
+        if(i != mass.size() - 1){ 
+            cout << mass[i] << ", "; 
+        } 
+        else{ 
+            cout << mass[i]; 
+        } 
+    } 
+    cout << "]"; 
+} 
+ 
+void re_zero(vector<char> &mass, vector<char> &mass2, int len, char max, char min){ 
+    int p = len - 1, count = 0; 
+    while(mass[p] == max or mass[p - 1] >= max){ 
+        p--; 
+    } 
+    for(int i = 0; i < mass2.size(); i++){ 
+        if(mass[p] < mass2[i] and count == 0 and i + 1 <= mass2.size()){ 
+            mass[p] = mass2[i]; 
+            mass[p + 1] = mass2[i + 1]; 
+            count++; 
+        } 
+    } 
+} 
+ 
+bool check(vector<char> &mass){ 
+    int count = 0; 
+    for(int i = 0; i < mass.size(); i++){ 
+        for(int j = 0; j < mass.size(); j++){ 
+            if(mass[i] == mass[j] and j != i){ 
+                count++; 
+            } 
+        } 
+        if(mass[i] == NULL){ 
+            count++; 
+        } 
+        if(mass[i] > mass[i + 1] and i + 1 < mass.size()){ 
+            count++; 
+        } 
+    } 
+    if(count == 0){ 
+        return true; 
+    } 
+    return false; 
+} 
+ 
+void sortv(vector<char> &mass){ 
+    char point; 
+    int count = mass.size(); 
+    for(int i = 0; i < count - 1; i++){ 
+        for(int j = 0; j < count - 1 - i; j++){ 
+            if(mass[j] > mass[j + 1]){ 
+                point = mass[j]; 
+                mass[j] = mass[j + 1]; 
+                mass[j + 1] = point; 
+            } 
+        } 
+    } 
+} 
+ 
+string itc_ToString(int num){ 
+    string res = "", result = ""; 
+    int point; 
+    if(num == 0){ 
+        return "0"; 
+    } 
+    while(num > 0){ 
+        point = num % 10; 
+        res += '0' + point; 
+        num = num / 10; 
+    } 
+    for(int i = len(res) - 1; i >= 0; i--){ 
+        result += res[i]; 
+    } 
+    return result; 
+} 
+ 
+int main() { 
+    vector<char> mass; 
+    int n, k; 
+    string str; 
+    cin >> k; 
+    cin >> n; 
+    for(int i = 1; i <= k; i++){ 
+        str += itc_ToString(i); 
+    } 
+    int count = len(str); 
+    for(int i = 0; i < count; i++){ 
+        mass.push_back(str[i]); 
+    } 
+    sortv(mass); 
+    char max = mass[mass.size() - 1], sec_max = max - n + 1; 
+    char min = mass[0]; 
+    vector<char> mass2; 
+    vector<char> mass3(n, min); 
+    for(int i = 0; i < n; i++){ 
+        mass2.push_back(sec_max); 
+        sec_max++; 
+    } 
+    while(mass3 != mass2){ 
+        if(check(mass3) == true){ 
+            print(mass3); 
+            cout << endl; 
+        } 
+        re_zero(mass3, mass, n, max, min); 
+    } 
+    print(mass3); 
+    return 0; 
+}
